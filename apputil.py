@@ -45,7 +45,7 @@ def survival_demographics():
     grouped['pclass'] = grouped['pclass'].astype(int)
 
     grouped = combos.merge(grouped, on=['pclass', 'sex', 'age_group'], how='left')
-    grouped[['count', 'n_survisors' ]] = grouped[['count', 'n_survisors']].fillna(0).astype(int)
+    grouped[['count', 'n_survivors' ]] = grouped[['count', 'n_survivors']].fillna(0).astype(int)
     
     grouped['survival_rate'] = grouped['n_survivors'] / grouped['count']
     grouped['survival_rate'] = grouped['survival_rate'].fillna(0.0)
