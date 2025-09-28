@@ -55,6 +55,29 @@ def survival_demographics():
 
     return grouped.sort_values(by=['pclass', 'sex', 'age_group'])
 
+
+# 7. Create a Plotly visualization in a function named `visualize_demographic()` that directly addresses your question by returning a Plotly figure (e.g., `fig = px. ...`). You are free to choose the chart type that you think best communicates the findings. Be creative — try different approaches, compare them, and ensure that your chart clearly answers the question you posed.
+
+# barchart of survival rate by age, coloured by sex and includes class
+def visualize_demographic():
+    df = survival_demographics()
+    fig = px.bar(
+        df,
+        x='age_group',
+        y='survival_rate',
+        color='sex',
+        barmode='group',
+        facet_col='pclass',
+        category_orders={
+            'age_group': ['Child', 'Teen', 'Adult', 'Senior'],
+            'pclass': [1, 2, 3],
+        },
+        labels={
+            'age_group': 'Age Group',
+            'survival_rate': 'Survival Rate',}
+    )
+    return fig
+
 #exercise 2
 
 def family_groups():
@@ -96,4 +119,25 @@ def last_names():
     return last.value_counts()
 
 
+
 # 5. Just like you did in Exercise 1, come up with a clear question that your results makes you curious about. Write this question in your app.py file above the call to your visualization function. Then, create a Plotly visualization in a function named `visualize_families()` that directly addresses your question. As in Exercise 1 you are free to choose the chart type that you think best communicates the findings.
+def visualize_families():
+    df = family_groups().copy()
+    df['pclass'] = df['pclass'].astype(str)
+    fig2 = px.bar(
+        df,
+        x='family_size',
+        y='avg_fare',
+        color='pclass',
+        barmode='group',
+        category_orders={
+            'pclass': [1, 2, 3],
+        },
+        labels={
+            'family_size': 'Family Size',
+            'avg_fare': 'Average Fare',
+            'pclass': 'Passenger Class'
+        },
+        title='Average fare paid by class and family size'
+    )
+    return fig2
