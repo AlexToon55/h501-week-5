@@ -16,10 +16,14 @@ def survival_demographics():
 
 # 2. Group the passengers by class, sex, and age group. 
     grouped = (df
-        .groupby(['pclass', 'sex', 'age_group'], observed=False)
-        .agg(count=('size'), n_survivors=('survived', 'sum'))
-        .reset_index(name='count')
+        .groupby(['pclass', 'sex', 'age_group'])
+        .agg(
+            count=('survived', 'size'),
+            survived=('survived', 'sum')
+            )
+        .reset_index()
     )
+    grouped['survival_rate'] = grouped['survived'] / grouped['count']
 
 
 # 3. For each group, calculate:  
