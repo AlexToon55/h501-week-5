@@ -27,13 +27,13 @@ def survival_demographics():
         .groupby(['pclass', 'sex', 'age_group'])
         .agg(
             count=('survived', 'size'),
-            survived=('survived', 'sum')
+            n_survisors=('survived', 'sum')
             )
         .reset_index()
     )
     grouped['survival_rate'] = grouped['survived'] / grouped['count']
 
-    classes = ['First Class', 'Second Class', 'Third Class']
+    classes = [1, 2, 3]
     sexes = ['female', 'male']
     ages = ['Child', 'Teen', 'Adult', 'Senior']
 
@@ -42,19 +42,15 @@ def survival_demographics():
         columns=['pclass', 'sex', 'age_group']
     )
 
-    # Merge the grouped data with the combinations to ensure all combinations are present
-    grouped = pd.merge(combos, grouped, on=['pclass', 'sex', 'age_group'], how='left')
-    grouped['count'] = grouped['count'].fillna(0).astype(int)
-    grouped['survived'] = grouped['survived'].fillna(0).astype(int)
-    grouped['survival_rate'] = grouped['survival_rate'].fillna(0)
+    combos['pclass'] = combos['pclass'].astype(int)
+    grouped['pclass'] = grouped['pclass'].astype(int)
 
+    grouped = combos.merge(grouped, on=['pclass', 'sex', 'age_group'], how='left')
+    grouped['count', 'n_survisors' ]] = grouped['count', n_survisors'].fillna(0).astype(int)
+    grouped['survival_rate'] = grouped['survival_rate'].fillna(0.0)
 
-
-
-
-
-
-
+    grouped['age_group'] = pd.Categorical(grouped['age_group'], categories=labels, ordered=True)
+    grouped = grouped.sort_values(by=['pclass','sex','age_group'])
 
 #exercise 2
 
