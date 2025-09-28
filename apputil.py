@@ -3,7 +3,7 @@ import pandas as pd
 
 # visualize demographic as grouped bar chart
 
-def visualize_demographic(df: pd.DataFrame):
+def survival_demographics(df: pd.DataFrame):
     # Create a new column in the Titanic dataset that classifies passengers into age categories (i.e., a pandas `category` series). The categories should be:
 #     - Child (up to 12) - Teen (13–19) - Adult (20–59) - Senior (60+)  
     bin_size = [0, 12, 19, 59, float('inf')]

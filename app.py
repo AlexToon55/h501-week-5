@@ -12,7 +12,7 @@ st.write(
 '''
 )
 # Generate and display the figure
-fig1 = visualize_demographic()
+fig1 = survival_demographics()
 st.plotly_chart(fig1, use_container_width=True)
 
 st.write(
