@@ -9,14 +9,20 @@ def survival_demographics():
     df.columns = df.columns.str.lower()
 
     # Create a new column in the Titanic dataset that classifies passengers into age categories (i.e., a pandas `category` series). The categories should be:
-#     - Child (up to 12) - Teen (13–19) - Adult (20–59) - Senior (60+)  
+    #     - Child (up to 12) - Teen (13–19) - Adult (20–59) - Senior (60+)  
     df = df.dropna(subset=['age']).copy()  # Drop rows where age is NaN
     bin_size = [0, 12, 19, 59, float('inf')]
     labels = ['Child', 'Teen', 'Adult', 'Senior']
 
     df['age_group'] = pd.cut(df['age'], bins=bin_size, labels=labels, right=True, include_lowest=True)
 
-# 2. Group the passengers by class, sex, and age group. 
+    # 2. Group the passengers by class, sex, and age group. 
+    # 3. For each group, calculate:  
+
+    #     - The number of survivors, `n_survivors`
+    #     - The survival rate, `survival_rate`
+    # 4. Return a table that includes the results for *all* combinations of class, sex, and age group. 
+    # 5. Order the results so they are easy to interpret.  
     grouped = (df
         .groupby(['pclass', 'sex', 'age_group'])
         .agg(
@@ -27,23 +33,26 @@ def survival_demographics():
     )
     grouped['survival_rate'] = grouped['survived'] / grouped['count']
 
+    classes = ['First Class', 'Second Class', 'Third Class']
+    sexes = ['female', 'male']
+    ages = ['Child', 'Teen', 'Adult', 'Senior']
 
-# 3. For each group, calculate:  
+    combos = pd.DataFrame(
+        [            (c, s, a) for c in classes for s in sexes for a in ages],
+        columns=['pclass', 'sex', 'age_group']
+    )
 
-#     - The number of survivors, `n_survivors`
-#     - The survival rate, `survival_rate`
-
-    grouped['n_survivors'] = df[df['survived'] == 1].groupby(['pclass', 'sex', 'age_group']).size().values
-    grouped['survival_rate'] = grouped['n_survivors'] / grouped['count']
-
-# 4. Return a table that includes the results for *all* combinations of class, sex, and age group. 
-# 5. Order the results so they are easy to interpret.  
-    
-    grouped = grouped.sort_values(by=['pclass', 'sex', 'age_group'])
-    return grouped
+    # Merge the grouped data with the combinations to ensure all combinations are present
+    grouped = pd.merge(combos, grouped, on=['pclass', 'sex', 'age_group'], how='left')
+    grouped['count'] = grouped['count'].fillna(0).astype(int)
+    grouped['survived'] = grouped['survived'].fillna(0).astype(int)
+    grouped['survival_rate'] = grouped['survival_rate'].fillna(0)
 
 
-# 6. Come up with a clear question that your results table makes you curious about (e.g., “Did women in first class have a higher survival rate than men in other classes?”). Write this question in your `app.py` file above the call to your visualization function, using `st.write("Your Question Here")`.
+
+
+
+
 
 
 
