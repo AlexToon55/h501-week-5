@@ -55,29 +55,33 @@ def family_groups():
     # to explore the relationship between family size, passenger class, and ticket fare. 
 # 1. Create a new column in the Titanic dataset that represents the total family size for each passenger, `family_size`. 
 # Family size is defined as the number of siblings/spouses aboard plus the number of parents/children aboard, plus the passenger themselves.
-    df['family_size'] = df['sibsp'] + df['parch']
-    df['family_size'].value_counts(sorts=False)
-
-    
 # 2. Group the passengers by family size and passenger class. For each group, calculate:  
 #    - The total number of passengers, `n_passengers`
 #    - The average ticket fare, `avg_fare`
 #    - The minimum and maximum ticket fares (to capture variation in wealth), `min_fare` and `max_fare`
 
-    family_groups = (
-        df.groupby(['family_size', 'pclass'])
+    
+    df['family_size'] = df['sibsp'] + df['parch'] + 1  # +1 for the passenger themselves
+    out = (
+         df.groupby(['family_size','pclass'])
         .agg(
-            n_passengers=('passenger_id', 'size'),
+            n_passengers=('survived', 'size'),
             avg_fare=('fare', 'mean'),
             min_fare=('fare', 'min'),
             max_fare=('fare', 'max')
         )
-        .reset_index()
+        .reset_index()  
     )
-
-# 3. Return a table with these results, sorted so that the values are clear and easy to interpret (for example, by class and then family size).
-
+    # 3. Return a table with these results, sorted so that the values are clear and easy to interpret (for example, by class and then family size).
+    return out.sort_values(by=['pclass', 'family_size'])
 
 # 4. Write a function called `last_names()` that extracts the last name of each passenger from the `Name` column, and returns the count for each last name (i.e., a pandas series with last name as index, and count as value). Does this result agree with that of the data table above? Share your findings in your app using `st.write`.
+
+def last_names():
+    # Load Titanic dataset
+    df = pd.read_csv('https://raw.githubusercontent.com/leontoddjohnson/datasets/main/data/titanic.csv')
+    last = df['name'].str.split(',').str[0]
+    return last.value_counts()
+
 
 # 5. Just like you did in Exercise 1, come up with a clear question that your results makes you curious about. Write this question in your app.py file above the call to your visualization function. Then, create a Plotly visualization in a function named `visualize_families()` that directly addresses your question. As in Exercise 1 you are free to choose the chart type that you think best communicates the findings.
