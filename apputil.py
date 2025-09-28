@@ -6,9 +6,11 @@ import pandas as pd
 def survival_demographics():
     # Load Titanic dataset
     df = pd.read_csv('https://raw.githubusercontent.com/leontoddjohnson/datasets/main/data/titanic.csv')
+    df.columns = df.columns.str.lower()
 
     # Create a new column in the Titanic dataset that classifies passengers into age categories (i.e., a pandas `category` series). The categories should be:
 #     - Child (up to 12) - Teen (13–19) - Adult (20–59) - Senior (60+)  
+    df = df.dropna(subset=['age']).copy()  # Drop rows where age is NaN
     bin_size = [0, 12, 19, 59, float('inf')]
     labels = ['Child', 'Teen', 'Adult', 'Senior']
 
@@ -50,6 +52,7 @@ def survival_demographics():
 def family_groups():
     # Load Titanic dataset
     df = pd.read_csv('https://raw.githubusercontent.com/leontoddjohnson/datasets/main/data/titanic.csv')
+    df.columns = df.columns.str.lower()
 
 
     # to explore the relationship between family size, passenger class, and ticket fare. 
@@ -80,7 +83,8 @@ def family_groups():
 def last_names():
     # Load Titanic dataset
     df = pd.read_csv('https://raw.githubusercontent.com/leontoddjohnson/datasets/main/data/titanic.csv')
-    last = df['name'].str.split(',').str[0]
+    df.columns = df.columns.str.lower()
+    last = df['name'].str.split(',').str[0].str.strip()
     return last.value_counts()
 
 
